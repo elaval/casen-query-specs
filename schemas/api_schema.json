@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "endpoint": "https://casen-api.smartfront.cl/api/v1/query",
+  "method": "POST",
+  "structure": {
+    "analysis_unit": {
+      "type": "string",
+      "enum": ["household", "person"],
+      "required": true
+    },
+    "metrics": {
+      "type": "array",
+      "required": true,
+      "items": {
+        "name": "string",
+        "per_capita": "boolean (optional)"
+      }
+    },
+    "dimensions": {
+      "type": "array",
+      "required": false,
+      "items": {
+        "type": "string (geographic | person_attribute)",
+        "attribute": "string",
+        "role": "string (optional, required for person_attribute)"
+      }
+    },
+    "filters": {
+      "type": "object",
+      "required": false
+    },
+    "weights": {
+      "type": "string",
+      "enum": ["regional", "none"],
+      "required": true
+    }
+  },
+  "available_metrics": [
+    {
+      "name": "ingreso_monetario_hogar",
+      "casen_variable": "ymonecorh",
+      "unit": "household"
+    },
+    {
+      "name": "ingreso_laboral_hogar",
+      "casen_variable": "ytrabajocorh",
+      "unit": "household"
+    },
+    {
+      "name": "ingreso_autonomo_hogar",
+      "casen_variable": "yauth",
+      "unit": "household"
+    }
+  ]
+}

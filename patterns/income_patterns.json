@@ -1,0 +1,40 @@
+{
+  "domain": "income",
+  "patterns": [
+    {
+      "id": "income_basic",
+      "keywords": ["ingreso", "ingresos", "gana", "ganan"],
+      "metric_map": {
+        "monetario": "ingreso_monetario_hogar",
+        "laboral": "ingreso_laboral_hogar",
+        "autonomo": "ingreso_autonomo_hogar",
+        "total": "ingreso_total_hogar"
+      },
+      "default_metric": "ingreso_monetario_hogar",
+      "query_template": {
+        "analysis_unit": "household",
+        "weights": "regional"
+      },
+      "valid_dimensions": ["area", "region", "dau", "qaut", "sexo_jefe", "edad_jefe"],
+      "examples": [
+        "Ingreso promedio",
+        "Ingreso per cápita",
+        "Ingreso por decil",
+        "Ingreso laboral por región"
+      ]
+    },
+    {
+      "id": "income_comparison",
+      "keywords": ["comparar", "diferencia", "brecha"],
+      "requires_dimension": true,
+      "query_template": {
+        "analysis_unit": "household",
+        "weights": "regional"
+      },
+      "examples": [
+        "Comparar ingreso urbano vs rural",
+        "Diferencia de ingreso por sexo del jefe de hogar"
+      ]
+    }
+  ]
+}
