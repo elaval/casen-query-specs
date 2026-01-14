@@ -1,0 +1,25 @@
+{
+  "domain": "poverty",
+  "patterns": [
+    {
+      "intent_keywords": ["pobreza", "pobres", "tasa de pobreza"],
+      "query_template": {
+        "analysis_unit": "household",
+        "metrics": [{"name": "poverty_rate"}],
+        "weights": "regional"
+      },
+      "valid_dimensions": ["area", "region", "dau"],
+      "example": "Tasa de pobreza por región"
+    },
+    {
+      "intent_keywords": ["pobreza multidimensional", "carencias"],
+      "query_template": {
+        "analysis_unit": "household",
+        "metrics": [{"name": "multidim_poverty_rate"}],
+        "weights": "regional"
+      },
+      "valid_dimensions": ["area", "region"],
+      "example": "Pobreza multidimensional urbana"
+    }
+  ]
+}

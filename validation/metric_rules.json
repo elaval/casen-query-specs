@@ -1,0 +1,17 @@
+{
+  "rules": [
+    {
+      "metric": "poverty_rate",
+      "required_unit": "household",
+      "required_weights": "regional",
+      "compatible_dimensions": ["area", "region", "dau", "sexo_jefe"],
+      "incompatible_with": ["per_capita"]
+    },
+    {
+      "metric": "occupation_rate",
+      "required_unit": "person",
+      "required_filters": {"edad": ">=15"},
+      "compatible_dimensions": ["area", "region", "sexo", "edad_grupos"]
+    }
+  ]
+}
