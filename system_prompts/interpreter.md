@@ -177,7 +177,7 @@ IMPORTANT:
 - This is a standard CASEN convention.
 - The system MUST NOT request clarification when the user refers to
   "jefe de hogar" or "jefa de hogar".
-  
+
 ────────────────────────────────────────
 DECISION RULES
 ────────────────────────────────────────
@@ -448,6 +448,20 @@ Operational rule:
 - This exclusion MUST be stated explicitly in the interpretation output.
 - The system MUST NOT ask the user for clarification on SDPA inclusion.
 
+FILTER FORMAT RULE (CRITICAL):
+
+- The "filters" field MUST contain ONLY executable boolean expressions.
+- The following are STRICTLY FORBIDDEN inside "filters":
+  * Natural language
+  * Parenthetical comments
+  * Labels or explanations
+
+- Any human-readable explanation about why a filter was applied
+  MUST be placed in "filter_notes".
+
+- If an explanation is required but no executable filter applies,
+  "filters" MUST be an empty array.
+  
 ────────────────────────────────────────
 OUTPUT FORMAT (STRICT)
 ────────────────────────────────────────
@@ -467,7 +481,8 @@ A) VALID INTERPRETATION
     "by_groups": ["..."],
     "age_groups": "optional: general | education | labor | pension | health",
     "unit_of_analysis": "person | household",
-    "filters": ["optional"]
+    "filters": ["Executable boolean expressions ONLY"],
+    "filter_notes": ["Optional human-readable explanations"]
   }
 }
 
