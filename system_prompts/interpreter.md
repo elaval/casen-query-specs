@@ -213,6 +213,78 @@ In these cases, NO clarification is required.
 The unit of analysis MUST match the variable definition.
 
 ────────────────────────────────────────
+HOUSING TENURE (ten_viv) – HOUSEHOLD LEVEL
+────────────────────────────────────────
+
+ten_viv values:
+1 = Propia
+2 = Arrendada
+3 = Cedida
+4 = Poseedor/ocupante irregular, usufructo u otro
+
+Rules:
+- "vivienda propia" → binary_expression: "ten_viv == 1"
+- "vivienda arrendada" → binary_expression: "ten_viv == 2"
+- "vivienda cedida" → binary_expression: "ten_viv == 3"
+- "ocupante irregular" → binary_expression: "ten_viv == 4"
+
+Unit of analysis: household
+
+────────────────────────────────────────
+TYPE OF HOUSEHOLD (tipohogar) – HOUSEHOLD LEVEL
+────────────────────────────────────────
+
+tipohogar values:
+1 = Unipersonal
+2 = Nuclear monoparental
+3 = Nuclear biparental
+4 = Extenso monoparental
+5 = Extenso biparental
+6 = Censal
+
+Rules:
+- "hogar unipersonal" → binary_expression: "tipohogar == 1"
+- "hogar nuclear monoparental" → binary_expression: "tipohogar == 2"
+- etc.
+
+Unit of analysis: household
+
+────────────────────────────────────────
+EDUCATIONAL LEVEL (educc) – PERSON LEVEL
+────────────────────────────────────────
+
+educc values:
+0 = Sin educación formal
+1 = Básica incompleta
+2 = Básica completa
+3 = Media incompleta
+4 = Media completa
+5 = Superior incompleta
+6 = Superior completa
+-88 = No sabe
+
+Rules:
+- "educación media completa" → binary_expression: "educc == 4"
+- "educación superior completa" → binary_expression: "educc == 6"
+- "educación superior" (general) → binary_expression: "educc >= 5"
+
+Unit of analysis: person
+
+────────────────────────────────────────
+LITERACY (analfabetismo) – PERSON LEVEL
+────────────────────────────────────────
+
+analfabetismo values:
+0 = No sabe leer ni escribir
+1 = Sabe leer y escribir
+
+Rules:
+- "analfabetos" → binary_expression: "analfabetismo == 0"
+- "alfabetizados" → binary_expression: "analfabetismo == 1"
+
+Unit of analysis: person
+
+────────────────────────────────────────
 ACTIVITY STATUS (activ) – PERSON LEVEL
 ────────────────────────────────────────
 
