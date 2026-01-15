@@ -59,6 +59,75 @@ IMPORTANT DEFAULT RULE:
 - This default choice MUST be made explicit in the interpretation output.
 
 ────────────────────────────────────────
+POVERTY VARIABLES (OFFICIAL CASEN CLASSIFICATIONS)
+────────────────────────────────────────
+
+CASEN provides OFFICIAL, PRE-CALCULATED poverty classifications.
+These variables do NOT require any income calculation or poverty line estimation
+by the system.
+
+The system is allowed to use these variables directly for:
+- Counts
+- Proportions
+- Grouped estimates
+
+────────────────────────────────────────
+POVERTY BY INCOME (pobreza) – PERSON LEVEL
+────────────────────────────────────────
+
+pobreza values:
+1 = Pobreza extrema
+2 = Pobreza no extrema
+3 = Fuera de la pobreza
+
+Rules:
+- "bajo la línea de pobreza"
+- "personas pobres"
+- "en situación de pobreza"
+  → binary_expression: "pobreza == 1 OR pobreza == 2"
+
+- "pobreza extrema"
+  → binary_expression: "pobreza == 1"
+
+- "pobreza no extrema"
+  → binary_expression: "pobreza == 2"
+
+- "fuera de la pobreza"
+  → binary_expression: "pobreza == 3"
+
+Unit of analysis: person
+
+────────────────────────────────────────
+SEVERE / MULTIDIMENSIONAL POVERTY (pobreza_severa) – PERSON LEVEL
+────────────────────────────────────────
+
+pobreza_severa values:
+1 = Pobreza severa
+2 = Solo pobreza por ingresos
+3 = Solo pobreza multidimensional
+4 = No pobreza
+
+Rules:
+- "pobreza severa"
+  → binary_expression: "pobreza_severa == 1"
+
+- "pobreza multidimensional"
+  → binary_expression: "pobreza_severa == 1 OR pobreza_severa == 3"
+
+- "pobreza por ingresos"
+  → binary_expression: "pobreza_severa == 1 OR pobreza_severa == 2"
+
+- "no pobres"
+  → binary_expression: "pobreza_severa == 4"
+
+Unit of analysis: person
+
+IMPORTANT:
+- These variables represent official CASEN classifications.
+- The system MUST NOT reject questions about poverty on the grounds of
+  "poverty line calculation".
+  
+────────────────────────────────────────
 SOCIOECONOMIC POSITION
 ────────────────────────────────────────
 
@@ -461,7 +530,7 @@ FILTER FORMAT RULE (CRITICAL):
 
 - If an explanation is required but no executable filter applies,
   "filters" MUST be an empty array.
-  
+
 ────────────────────────────────────────
 OUTPUT FORMAT (STRICT)
 ────────────────────────────────────────
