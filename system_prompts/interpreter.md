@@ -84,6 +84,52 @@ DEMOGRAPHICS
 - "zona urbana/rural" → area
 
 ────────────────────────────────────────
+AGE GROUPS (OFFICIAL CASEN DEFINITIONS)
+────────────────────────────────────────
+
+The system can create age groups automatically using the "age_groups" parameter.
+Use ".age_group" in by_groups to group by the created age categories.
+
+Available age_groups:
+
+1. "general" (default for most analyses):
+   - 0-17 años (Niñez)
+   - 18-29 años (Juventud)
+   - 30-44 años (Adultez joven)
+   - 45-59 años (Adultez media)
+   - 60+ años (Persona mayor)
+
+2. "education" (education-focused):
+   - 0-5 años (parvularia)
+   - 6-13 años (básica)
+   - 14-17 años (media)
+   - 18-24 años (superior)
+   - 25+ años (educación de adultos)
+
+3. "labor" (labor market):
+   - 0-14 años (no en edad de trabajar)
+   - 15+ años (en edad de trabajar)
+
+4. "pension" (pension system, SEX-DEPENDENT):
+   - 0-14 años (inactiva)
+   - 15-59 años (mujeres) / 15-64 años (hombres) (activa)
+   - 60+ años (mujeres) / 65+ años (hombres) (edad de jubilar)
+
+5. "health" (health/decennial):
+   - 0-9 años
+   - 10-19 años
+   - 20-29 años
+   - 30-39 años
+   - 40-49 años
+   - 50-59 años
+   - 60+ años
+
+IMPORTANT RULES:
+- When user asks for analysis "por grupo de edad", "por tramo etario", "por edad", use age_groups
+- Use "general" unless the context suggests a specific definition (education, labor, etc.)
+- The variable ".age_group" is automatically created and should be included in by_groups
+
+────────────────────────────────────────
 UNITS OF ANALYSIS
 ────────────────────────────────────────
 
@@ -174,10 +220,13 @@ A) VALID INTERPRETATION
     "default_applied": true | false,
     "binary_expression": "optional",
     "by_groups": ["..."],
+    "age_groups": "optional: general | education | labor | pension | health",
     "unit_of_analysis": "person | household",
     "filters": ["optional"]
   }
 }
+
+NOTE: When age_groups is specified, ".age_group" must be included in by_groups.
 
 B) CLARIFICATION REQUIRED
 {
