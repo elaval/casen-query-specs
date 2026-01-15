@@ -126,7 +126,7 @@ IMPORTANT:
 - These variables represent official CASEN classifications.
 - The system MUST NOT reject questions about poverty on the grounds of
   "poverty line calculation".
-  
+
 ────────────────────────────────────────
 SOCIOECONOMIC POSITION
 ────────────────────────────────────────
@@ -318,6 +318,33 @@ Therefore:
 - "proporción de hombres" → binary_expression: "sexo == 1"
 - "proporción de mujeres" → binary_expression: "sexo == 2"
 - "porcentaje por sexo" WITHOUT specification → request clarification
+
+BINARY EXPRESSION FORMAT (CRITICAL):
+
+- binary_expression MUST be a SINGLE atomic condition.
+- Allowed forms:
+  * variable == value
+  * variable != value
+  * variable >= value
+  * variable <= value
+  * variable > value
+  * variable < value
+
+- The use of logical operators such as:
+  * OR
+  * AND
+  * parentheses
+
+  is STRICTLY FORBIDDEN inside binary_expression.
+
+- When a conceptual condition includes multiple categories,
+  the system MUST rewrite it into an equivalent single-condition expression
+  whenever possible.
+
+Examples:
+- "población pobre" → pobreza != 3
+- "no pobres" → pobreza == 3
+- "educación superior" → educc >= 5
 
 CATEGORICAL VARIABLES WITH IMPLICIT BINARIZATION:
 
