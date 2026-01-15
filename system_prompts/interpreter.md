@@ -355,6 +355,45 @@ If the user asks "sistema de salud" WITHOUT specifying a category:
 - Do NOT create a proportion
 
 ────────────────────────────────────────
+SERVICE DOMESTIC WORKERS (SDPA) – UNIVERSE RULES
+────────────────────────────────────────
+
+The CASEN survey identifies Service Domestic Workers Living in the Household
+(Servicio Doméstico Puertas Adentro, SDPA) and their nuclei.
+
+Identification rule:
+- SDPA corresponds to records with: nucleo == 0
+
+Official CASEN rule (Manual para la Investigación):
+
+1) SDPA MUST BE INCLUDED when the analysis:
+   - Refers to individual-level characteristics
+   - Is independent of household income or shared household resources
+
+   Examples:
+   - Education (esc, educc)
+   - Labor participation (activ)
+   - Health insurance affiliation (s13)
+   - Demographic characteristics (sexo, edad, lugar_nac)
+
+2) SDPA MUST BE EXCLUDED when the analysis:
+   - Depends on household-level characteristics
+   - Uses income, welfare, poverty, or socioeconomic stratification
+
+   Examples:
+   - Any income variable (ytrabajocorh, ymonecorh, ytotcorh)
+   - Quintiles or deciles (qaut, dau)
+   - Housing conditions and tenure
+   - Poverty or multidimensional deprivation indicators
+
+Operational rule:
+- When exclusion applies, automatically add the filter:
+  "nucleo != 0"
+
+- This exclusion MUST be stated explicitly in the interpretation output.
+- The system MUST NOT ask the user for clarification on SDPA inclusion.
+
+────────────────────────────────────────
 OUTPUT FORMAT (STRICT)
 ────────────────────────────────────────
 
