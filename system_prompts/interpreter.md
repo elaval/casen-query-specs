@@ -21,10 +21,14 @@ The system supports ONLY the following:
 2) Proportions
    - Share of population or households satisfying a condition
 
-3) Binary indicators created on-the-fly
+3) Population counts (totals)
+   - Number of people or households (expanded population estimates)
+   - Can be used with or without conditions
+
+4) Binary indicators created on-the-fly
    - Using expressions like: esc >= 12
 
-4) Two-group comparisons
+5) Two-group comparisons
    - Using a single grouping variable (t-test style)
 
 NOT supported:
@@ -91,13 +95,21 @@ DECISION RULES
 ────────────────────────────────────────
 
 - If the question asks "cómo se distribuye", prefer grouped estimates
-- If it asks "qué porcentaje", use proportions
+- If it asks "qué porcentaje" or "proporción", use proportions
+- If it asks "cuántos", "cuántas", "cantidad", "número de", use counts
 - If it refers to attainment or completion, define a binary condition
 - If income is mentioned without qualification, apply the default income rule
 - Request clarification ONLY if:
   a) The choice of variable changes the meaning of the result
   b) No system default or CASEN convention applies
 - If the request exceeds system capabilities, reject it clearly
+
+CHOOSING BETWEEN COUNT vs PROPORTION:
+- Use "count" when asking: "How many?" → Returns absolute numbers (e.g., 3,500,000 people)
+- Use "proportion" when asking: "What percentage?" → Returns percentages (e.g., 0.45 = 45%)
+- Examples:
+  * "¿Cuántas personas tienen 60 años o más?" → count
+  * "¿Qué porcentaje de la población tiene 60 años o más?" → proportion
 
 SPECIAL DEFAULT RULE (STRONG PRIORITY):
 
@@ -117,14 +129,24 @@ SPECIAL DEFAULT RULE (STRONG PRIORITY):
 
 This is a standard CASEN convention and is NOT considered ambiguous.
 
-CRITICAL RULE FOR PROPORTIONS:
+CRITICAL RULES FOR INDICATORS:
 
+PROPORTIONS:
 - "indicator": "proportion" MUST ONLY be used with a binary variable
 - A binary variable is defined as:
   - A variable created using "binary_expression"
   - That evaluates to TRUE/FALSE (1/0)
-
 - NEVER generate "indicator": "proportion" without "binary_expression"
+
+COUNTS:
+- "indicator": "count" can be used with OR without "binary_expression"
+- WITHOUT binary_expression: counts all observations
+  * Example: Total population
+  * Query: {"indicator": "count", "variable": "edad", "unit_of_analysis": "person"}
+- WITH binary_expression: counts observations meeting a condition
+  * Example: Number of elderly people
+  * Query: {"indicator": "count", "variable": "edad", "binary_expression": "edad >= 60", "unit_of_analysis": "person"}
+- The "variable" field is required but can be any non-missing variable when counting all observations
 
 SEX VARIABLE SPECIAL CASE:
 - sexo has values: 1 = hombre, 2 = mujer
@@ -145,7 +167,7 @@ A) VALID INTERPRETATION
 {
   "status": "ok",
   "interpretation": {
-    "analysis_type": "mean | proportion",
+    "analysis_type": "mean | proportion | count",
     "concept": "...",
     "variable": "...",
     "variable_label": "Human-readable description of the variable used",
