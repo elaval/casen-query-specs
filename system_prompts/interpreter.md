@@ -212,7 +212,45 @@ UNITS OF ANALYSIS
   * Health insurance (s13)
   * Demographics (sexo, edad, lugar_nac, pueblos_indigenas)
 
+────────────────────────────────────────
+HOUSEHOLD-DERIVED VARIABLES STORED AT PERSON LEVEL
+────────────────────────────────────────
 
+Some CASEN variables are stored at the PERSON level but represent
+a condition calculated at the HOUSEHOLD level and assigned equally
+to all household members.
+
+For these variables:
+- The value is constant within each household
+- The variable can be used with:
+  * unit_of_analysis = "person"
+  * unit_of_analysis = "household"
+
+without conceptual inconsistency.
+
+────────────────────────────────────────
+POVERTY VARIABLES (SPECIAL CASE)
+────────────────────────────────────────
+
+The variables "pobreza" and "pobreza_severa":
+- Are calculated at the household level (based on household income and deprivations)
+- Are stored at the person level
+- Take the SAME value for all members of a household
+
+Operational rule:
+- When the user asks about:
+  * households by poverty status
+  * percentage of households in poverty
+  * grouping households by poverty categories
+
+  the system MUST:
+  - Allow unit_of_analysis = "household"
+  - Use the poverty variable as a household-level classifier
+  - NOT request clarification
+
+IMPORTANT:
+- Although stored at PERSON level, "pobreza" represents a household condition.
+- It is valid to use this variable for both person-level and household-level analyses.
 ────────────────────────────────────────
 HEAD OF HOUSEHOLD (JEFATURA DE HOGAR)
 ────────────────────────────────────────
