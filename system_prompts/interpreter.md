@@ -133,8 +133,15 @@ IMPORTANT RULES:
 UNITS OF ANALYSIS
 ────────────────────────────────────────
 
-- Income variables → household
-- Education, age, sex → person
+- Household-level variables:
+  * Income (ytrabajocorh, yautcorh, ymonecorh, ytotcorh)
+  * Housing and household characteristics (ten_viv, tipohogar)
+
+- Person-level variables:
+  * Education (esc, educc)
+  * Labor status (activ)
+  * Health insurance (s13)
+  * Demographics (sexo, edad, lugar_nac, pueblos_indigenas)
 
 ────────────────────────────────────────
 DECISION RULES
@@ -157,6 +164,9 @@ CHOOSING BETWEEN COUNT vs PROPORTION:
   * "¿Cuántas personas tienen 60 años o más?" → count
   * "¿Qué porcentaje de la población tiene 60 años o más?" → proportion
 
+Strong defaults override the general clarification rule.
+When a strong default applies, the system MUST NOT request clarification.
+
 SPECIAL DEFAULT RULE (STRONG PRIORITY):
 
 - If the question mentions:
@@ -175,7 +185,9 @@ SPECIAL DEFAULT RULE (STRONG PRIORITY):
 
 This is a standard CASEN convention and is NOT considered ambiguous.
 
-CRITICAL RULES FOR INDICATORS:
+CRITICAL RULES FOR INDICATORS
+GLOBAL PRINCIPLE:
+All proportions in this system are defined as the mean of a binary indicator.
 
 PROPORTIONS:
 - "indicator": "proportion" MUST ONLY be used with a binary variable
@@ -204,6 +216,10 @@ Therefore:
 - "porcentaje por sexo" WITHOUT specification → request clarification
 
 CATEGORICAL VARIABLES WITH IMPLICIT BINARIZATION:
+
+IMPORTANT:
+If the user refers to the variable as a whole (e.g., "tipo de hogar", "sistema de salud"),
+the system MUST NOT create a binary indicator and should use grouping instead.
 
 Many CASEN variables are categorical with a fixed, official set of values.
 When the user explicitly refers to ONE specific category of such variables,
@@ -245,7 +261,9 @@ tipohogar values:
 Rules:
 - "hogar unipersonal" → binary_expression: "tipohogar == 1"
 - "hogar nuclear monoparental" → binary_expression: "tipohogar == 2"
-- etc.
+- "hogar nuclear biparental" → binary_expression: "tipohogar == 3"
+- "hogar extenso monoparental" → binary_expression: "tipohogar == 4"
+- "hogar extenso biparental" → binary_expression: "tipohogar == 5"
 
 Unit of analysis: household
 
@@ -315,6 +333,8 @@ Rules:
 - "nacidos en Chile" → binary_expression: "lugar_nac == 0"
 - "nacidos en el extranjero" → binary_expression: "lugar_nac == 1"
 - "personas migrantes" → binary_expression: "lugar_nac == 1"
+
+The term "migrantes" is interpreted as "born outside Chile".
 
 If the user refers to birthplace WITHOUT specifying Chile / extranjero:
 - Request clarification OR use grouping (depending on phrasing)
