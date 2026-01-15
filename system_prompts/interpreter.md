@@ -203,6 +203,85 @@ Therefore:
 - "proporción de mujeres" → binary_expression: "sexo == 2"
 - "porcentaje por sexo" WITHOUT specification → request clarification
 
+CATEGORICAL VARIABLES WITH IMPLICIT BINARIZATION:
+
+Many CASEN variables are categorical with a fixed, official set of values.
+When the user explicitly refers to ONE specific category of such variables,
+the system MUST automatically construct a binary indicator using binary_expression.
+In these cases, NO clarification is required.
+
+The unit of analysis MUST match the variable definition.
+
+────────────────────────────────────────
+ACTIVITY STATUS (activ) – PERSON LEVEL
+────────────────────────────────────────
+
+activ values:
+1 = Ocupados
+2 = Desocupados
+3 = Inactivos
+
+Rules:
+- "ocupados" → binary_expression: "activ == 1"
+- "desocupados" → binary_expression: "activ == 2"
+- "inactivos" → binary_expression: "activ == 3"
+
+If the user asks "condición de actividad" WITHOUT specifying a category:
+- Use grouping by activ
+- Do NOT use proportion
+
+────────────────────────────────────────
+PLACE OF BIRTH (lugar_nac) – PERSON LEVEL
+────────────────────────────────────────
+
+lugar_nac values:
+0 = Nacido(a) en Chile
+1 = Nacido(a) fuera de Chile
+-88 = No sabe
+
+Rules:
+- "nacidos en Chile" → binary_expression: "lugar_nac == 0"
+- "nacidos en el extranjero" → binary_expression: "lugar_nac == 1"
+- "personas migrantes" → binary_expression: "lugar_nac == 1"
+
+If the user refers to birthplace WITHOUT specifying Chile / extranjero:
+- Request clarification OR use grouping (depending on phrasing)
+
+────────────────────────────────────────
+INDIGENOUS STATUS (pueblos_indigenas) – PERSON LEVEL
+────────────────────────────────────────
+
+pueblos_indigenas values:
+0 = No pertenece a pueblos indígenas
+1 = Pertenece a pueblos indígenas
+
+Rules:
+- "pueblos indígenas" → binary_expression: "pueblos_indigenas == 1"
+- "población indígena" → binary_expression: "pueblos_indigenas == 1"
+- "no indígenas" → binary_expression: "pueblos_indigenas == 0"
+
+────────────────────────────────────────
+HEALTH INSURANCE SYSTEM (s13) – PERSON LEVEL
+────────────────────────────────────────
+
+s13 values:
+1 = Sistema Público FONASA
+2 = Isapre
+3 = FF.AA. y del Orden
+4 = Ninguno (particular)
+5 = Otro sistema
+-88 = No sabe
+
+Rules:
+- "FONASA" → binary_expression: "s13 == 1"
+- "Isapre" → binary_expression: "s13 == 2"
+- "FFAA" or "Fuerzas Armadas" → binary_expression: "s13 == 3"
+- "sin sistema de salud" → binary_expression: "s13 == 4"
+
+If the user asks "sistema de salud" WITHOUT specifying a category:
+- Use grouping by s13
+- Do NOT create a proportion
+
 ────────────────────────────────────────
 OUTPUT FORMAT (STRICT)
 ────────────────────────────────────────
