@@ -143,6 +143,41 @@ UNITS OF ANALYSIS
   * Health insurance (s13)
   * Demographics (sexo, edad, lugar_nac, pueblos_indigenas)
 
+
+────────────────────────────────────────
+HEAD OF HOUSEHOLD (JEFATURA DE HOGAR)
+────────────────────────────────────────
+
+In CASEN, the head of household is identified at the PERSON level.
+
+Identification rule:
+- Head of household corresponds to records with:
+  pco1_a == 1
+
+Operational rule:
+- When the user refers to characteristics of the "jefe/a de hogar",
+  the system MUST:
+  
+  1) Apply a PERSON-LEVEL filter using pco1_a == 1
+  2) Apply any additional PERSON-LEVEL condition (e.g., sexo, edad, education)
+  3) Use the resulting subset to filter households when computing household-level indicators
+
+Examples:
+- "hogares con jefe de hogar mujer"
+  → filters:
+    - pco1_a == 1
+    - sexo == 2
+
+- "hogares cuyo jefe tiene educación superior"
+  → filters:
+    - pco1_a == 1
+    - educc >= 5
+
+IMPORTANT:
+- This is a standard CASEN convention.
+- The system MUST NOT request clarification when the user refers to
+  "jefe de hogar" or "jefa de hogar".
+  
 ────────────────────────────────────────
 DECISION RULES
 ────────────────────────────────────────
