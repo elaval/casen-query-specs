@@ -84,7 +84,8 @@ Rules:
 - "bajo la línea de pobreza"
 - "personas pobres"
 - "en situación de pobreza"
-  → binary_expression: "pobreza == 1 OR pobreza == 2"
+  → binary_expression: "pobreza == 1 | pobreza == 2"
+  → Equivalente simplificado: "pobreza != 3"
 
 - "pobreza extrema"
   → binary_expression: "pobreza == 1"
@@ -112,10 +113,10 @@ Rules:
   → binary_expression: "pobreza_severa == 1"
 
 - "pobreza multidimensional"
-  → binary_expression: "pobreza_severa == 1 OR pobreza_severa == 3"
+  → binary_expression: "pobreza_severa == 1 | pobreza_severa == 3"
 
 - "pobreza por ingresos"
-  → binary_expression: "pobreza_severa == 1 OR pobreza_severa == 2"
+  → binary_expression: "pobreza_severa == 1 | pobreza_severa == 2"
 
 - "no pobres"
   → binary_expression: "pobreza_severa == 4"
@@ -348,6 +349,81 @@ COUNTS:
   * Query: {"indicator": "count", "variable": "edad", "binary_expression": "edad >= 60", "unit_of_analysis": "person"}
 - The "variable" field is required but can be any non-missing variable when counting all observations
 
+────────────────────────────────────────
+FILTERS vs BINARY_EXPRESSION (CRITICAL DISTINCTION)
+────────────────────────────────────────
+
+WHEN TO USE "filters":
+- To define the UNIVERSE of analysis (who gets included)
+- To subset the data BEFORE calculating the statistic
+- For exclusions that apply to all indicators (count, proportion, mean)
+
+WHEN TO USE "binary_expression":
+- To define WHAT you're measuring (the characteristic of interest)
+- REQUIRED for "proportion" indicator
+- OPTIONAL for "count" indicator (when counting a specific condition)
+- NEVER used for "mean" indicator
+
+EXAMPLES - COUNT WITH RANGE:
+
+❌ INCORRECT (mixing binary_expression + filters):
+{
+  "indicator": "count",
+  "variable": "edad",
+  "binary_expression": "edad >= 25",
+  "filters": ["edad < 65"],
+  "by_groups": ["dau"]
+}
+
+✅ CORRECT (use only filters):
+{
+  "indicator": "count",
+  "variable": "edad",
+  "by_groups": ["dau"],
+  "filters": ["edad >= 25", "edad < 65", "nucleo != 0"]
+}
+
+EXAMPLES - PROPORTION WITH RANGE:
+
+❌ INCORRECT (cannot express with current system):
+Asking "¿Qué proporción de la población total tiene entre 25 y 64 años?"
+This requires: (count of people aged 25-64) / (total population)
+
+✅ CORRECT (using compound binary_expression):
+{
+  "indicator": "proportion",
+  "variable": "edad",
+  "binary_expression": "edad >= 25 & edad < 65",
+  "unit_of_analysis": "person",
+  "filters": ["nucleo != 0"]
+}
+
+EXAMPLES - COUNT WITH CONDITION:
+
+Example: "Cantidad de hombres mayores de 60 años por decil"
+
+Option A - Using binary_expression:
+{
+  "indicator": "count",
+  "variable": "edad",
+  "binary_expression": "sexo == 1 & edad >= 60",
+  "by_groups": ["dau"],
+  "filters": ["nucleo != 0"]
+}
+
+Option B - Using filters (equivalent, preferred for count):
+{
+  "indicator": "count",
+  "variable": "edad",
+  "by_groups": ["dau"],
+  "filters": ["sexo == 1", "edad >= 60", "nucleo != 0"]
+}
+
+RECOMMENDATION FOR COUNT:
+- Prefer "filters" over "binary_expression" when possible
+- Use "binary_expression" only when the condition itself is the object of study
+- "filters" are more semantically correct for defining the analysis universe
+
 SEX VARIABLE SPECIAL CASE:
 - sexo has values: 1 = hombre, 2 = mujer
 - sexo is NOT binary
@@ -357,32 +433,67 @@ Therefore:
 - "proporción de mujeres" → binary_expression: "sexo == 2"
 - "porcentaje por sexo" WITHOUT specification → request clarification
 
-BINARY EXPRESSION FORMAT (CRITICAL):
+────────────────────────────────────────
+BINARY_EXPRESSION FORMAT (UPDATED)
+────────────────────────────────────────
 
-- binary_expression MUST be a SINGLE atomic condition.
-- Allowed forms:
-  * variable == value
-  * variable != value
-  * variable >= value
-  * variable <= value
-  * variable > value
-  * variable < value
+The field "binary_expression" defines the characteristic being measured.
 
-- The use of logical operators such as:
-  * OR
-  * AND
-  * parentheses
+binary_expression can be:
 
-  is STRICTLY FORBIDDEN inside binary_expression.
+1) A SIMPLE expression:
+   - variable == value
+   - variable != value
+   - variable >= value
+   - variable < value
 
-- When a conceptual condition includes multiple categories,
-  the system MUST rewrite it into an equivalent single-condition expression
-  whenever possible.
+2) A COMPOUND expression using logical operators:
+
+   - AND: use &
+   - OR:  use |
+   - NOT: use !
+   - Parentheses () are allowed and recommended for clarity
 
 Examples:
-- "población pobre" → pobreza != 3
-- "no pobres" → pobreza == 3
-- "educación superior" → educc >= 5
+- "edad >= 25 & edad < 65"
+- "pobreza == 1 | pobreza == 2"
+- "(sexo == 2) & (edad >= 60)"
+- "!is.na(edad)"
+
+IMPORTANT SYNTAX RULES:
+- Use & instead of AND / &&
+- Use | instead of OR / ||
+- Use ! instead of NOT
+- Use spaces around operators for readability
+
+────────────────────────────────────────
+FILTERS vs BINARY_EXPRESSION (DECISION RULE)
+────────────────────────────────────────
+
+- "filters" define the analysis universe (who is included).
+- "binary_expression" defines the characteristic being measured.
+
+RULES:
+
+1) For PROPORTIONS:
+   - binary_expression is REQUIRED
+   - Use binary_expression to define the condition being measured
+   - filters should ONLY restrict the universe (e.g., SDPA exclusion)
+
+2) For COUNTS:
+   - Prefer using filters to define subpopulations
+   - binary_expression should be used ONLY if the condition itself
+     is the focus of the measurement
+
+3) DO NOT split a single conceptual condition across:
+   - binary_expression AND filters
+
+   Example (INCORRECT):
+   - binary_expression: "edad >= 25"
+   - filters: ["edad < 65"]
+
+   Example (CORRECT for proportion):
+   - binary_expression: "edad >= 25 & edad < 65"
 
 CATEGORICAL VARIABLES WITH IMPLICIT BINARIZATION:
 
