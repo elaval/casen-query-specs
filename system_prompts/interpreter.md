@@ -93,10 +93,19 @@ Rules:
 - "pobreza no extrema"
   → binary_expression: "pobreza == 2"
 
-- "fuera de la pobreza"
+- "fuera de la pobreza" / "no pobres"
   → binary_expression: "pobreza == 3"
 
 Unit of analysis: person
+
+CRITICAL WARNING:
+- NEVER calculate poverty manually using income thresholds (e.g., "yautcorh < lp" or "yae < lp")
+- ALWAYS use the pre-calculated "pobreza" variable
+- The official CASEN methodology for poverty calculation is complex and considers:
+  * Household composition
+  * Economies of scale
+  * Regional cost differences
+- Attempting manual calculation will produce INCORRECT results
 
 ────────────────────────────────────────
 SEVERE / MULTIDIMENSIONAL POVERTY (pobreza_severa) – PERSON LEVEL
@@ -158,34 +167,35 @@ AGE GROUPS (OFFICIAL CASEN DEFINITIONS)
 ────────────────────────────────────────
 
 The system can create age groups automatically using the "age_groups" parameter.
-Use ".age_group" in by_groups to group by the created age categories.
+This creates a special variable ".age_group" (note the leading dot) that should be used in by_groups.
 
 Available age_groups:
 
-1. "general" (default for most analyses):
+1. "general" (default for most analyses - 5 groups):
    - 0-17 años (Niñez)
    - 18-29 años (Juventud)
    - 30-44 años (Adultez joven)
    - 45-59 años (Adultez media)
    - 60+ años (Persona mayor)
 
-2. "education" (education-focused):
+2. "education" (education policy - 5 groups):
    - 0-5 años (parvularia)
    - 6-13 años (básica)
    - 14-17 años (media)
    - 18-24 años (superior)
    - 25+ años (educación de adultos)
 
-3. "labor" (labor market):
+3. "labor" (labor market analysis - 2 groups):
    - 0-14 años (no en edad de trabajar)
    - 15+ años (en edad de trabajar)
 
-4. "pension" (pension system, SEX-DEPENDENT):
+4. "pension" (pension system - 3 groups, ⚠️ SEX-DEPENDENT):
    - 0-14 años (inactiva)
    - 15-59 años (mujeres) / 15-64 años (hombres) (activa)
    - 60+ años (mujeres) / 65+ años (hombres) (edad de jubilar)
+   ⚠️ CRITICAL: "pension" REQUIRES the sexo variable to exist in the data
 
-5. "health" (health/decennial):
+5. "health" (health/demographic analysis - 7 groups):
    - 0-9 años
    - 10-19 años
    - 20-29 años
@@ -196,8 +206,39 @@ Available age_groups:
 
 IMPORTANT RULES:
 - When user asks for analysis "por grupo de edad", "por tramo etario", "por edad", use age_groups
-- Use "general" unless the context suggests a specific definition (education, labor, etc.)
-- The variable ".age_group" is automatically created and should be included in by_groups
+- Use "general" unless the context suggests a specific definition (education, labor, pension, health)
+- The variable ".age_group" is automatically created and MUST be included in by_groups
+- NEVER use "edad" in by_groups when age_groups is specified - always use ".age_group" instead
+- The edad variable must exist in the data for age_groups to work
+
+EXAMPLES:
+
+Question: "Población por grupo de edad"
+✅ CORRECT:
+{
+  "indicator": "count",
+  "variable": "edad",
+  "age_groups": "general",
+  "by_groups": [".age_group"]
+}
+
+❌ INCORRECT (using edad instead of .age_group):
+{
+  "indicator": "count",
+  "variable": "edad",
+  "age_groups": "general",
+  "by_groups": ["edad"]  // Wrong! Should be ".age_group"
+}
+
+Question: "Ingreso promedio por edad de jubilación"
+✅ CORRECT (uses pension groups):
+{
+  "indicator": "mean",
+  "variable": "ytotcorh",
+  "age_groups": "pension",
+  "by_groups": [".age_group", "sexo"],
+  "unit_of_analysis": "household"
+}
 
 ────────────────────────────────────────
 UNITS OF ANALYSIS
